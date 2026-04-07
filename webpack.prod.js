@@ -4,7 +4,7 @@ const common = require("./webpack.common.js");
 module.exports = merge(common, {
   mode: "production",
   output: {
-    publicPath: "/dinosaur-game/",
+    publicPath: "/leon-game/",
     clean: true,
   },
 });
