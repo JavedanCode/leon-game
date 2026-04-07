@@ -11,6 +11,29 @@ const groundHeight = 50;
 
 const groundLevel = canvas.height - groundHeight;
 
+let gameSpeed = 3;
+
+let obstacles = [];
+
+let distanceSinceLastSpawn = 0;
+
+let canJump = true;
+
+window.addEventListener("keydown", (e) => {
+  if (e.code === "Space") {
+    if (player.vy === 0) {
+      player.vy = player.jumpSpeed;
+      canJump = false;
+    }
+  }
+});
+
+const gapChances = [
+  { gap: 450, weight: 0.5 }, // 50%
+  { gap: 350, weight: 0.3 }, // 30%
+  { gap: 400, weight: 0.2 }, // 20%
+];
+
 let ground1 = {
   x: 0,
   y: canvas.height - groundHeight,
@@ -25,8 +48,6 @@ let ground2 = {
   height: groundHeight,
 };
 
-let obstacles = [];
-
 function Obstacle() {
   return {
     x: canvas.width,
@@ -35,14 +56,6 @@ function Obstacle() {
     height: 40,
   };
 }
-
-let gameSpeed = 3;
-
-const gapChances = [
-  { gap: 450, weight: 0.5 }, // 50%
-  { gap: 350, weight: 0.3 }, // 30%
-  { gap: 400, weight: 0.2 }, // 20%
-];
 
 function getRandomGap() {
   let rand = Math.random();
@@ -56,7 +69,6 @@ function getRandomGap() {
   }
 }
 
-let distanceSinceLastSpawn = 0;
 let nextSpawnDistance = getRandomGap();
 
 const player = {
@@ -64,9 +76,9 @@ const player = {
   y: canvas.height - 2 * groundHeight,
   width: 50,
   height: 50,
-  jumpSpeed: -14,
-  gravity: -8,
-  verticalVelocity: 0,
+  jumpSpeed: -30,
+  gravity: 1,
+  vy: 0,
 };
 function update() {
   ground1.x -= gameSpeed;
@@ -98,9 +110,10 @@ function update() {
   player.vy += player.gravity;
   player.y += player.vy;
 
-  if (player.y + player.height > groundLevel) {
+  if (player.y + player.height >= groundLevel) {
     player.y = groundLevel - player.height;
     player.vy = 0;
+    canJump = true;
   }
 }
 function draw() {
