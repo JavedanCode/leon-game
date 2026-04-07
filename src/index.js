@@ -19,6 +19,10 @@ let distanceSinceLastSpawn = 0;
 
 let canJump = true;
 
+let gameOver = false;
+
+let score = 0;
+
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     if (player.vy === 0) {
@@ -69,6 +73,15 @@ function getRandomGap() {
   }
 }
 
+function isColliding(a, b) {
+  return (
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y
+  );
+}
+
 let nextSpawnDistance = getRandomGap();
 
 const player = {
@@ -107,6 +120,8 @@ function update() {
 
   obstacles = obstacles.filter((obs) => obs.x + obs.width > 0);
 
+  score++;
+
   player.vy += player.gravity;
   player.y += player.vy;
 
@@ -115,17 +130,22 @@ function update() {
     player.vy = 0;
     canJump = true;
   }
+
+  for (let obs of obstacles) {
+    if (isColliding(obs, player)) {
+      gameOver = true;
+      return;
+    }
+  }
 }
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // let num = Math.random();
-  // if (num < 0.3) {
-  //
-  // } else if (num > 0.33 && num < 0.66) {
-  //   ctx.fillStyle = "blue";
-  // } else {
-  //   ctx.fillStyle = "red";
-  // }
+
+  ctx.fillStyle = "white";
+  ctx.font = "30px arial";
+  ctx.textAlign = "left";
+  ctx.fillText(`Score: ${score}`, 40, 40);
+
   ctx.fillStyle = "red";
   ctx.fillRect(ground1.x, ground1.y, ground1.width, ground1.height);
   ctx.fillStyle = "green";
@@ -140,8 +160,16 @@ function draw() {
     let obs = obstacles[i];
     ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
   }
+
+  if (gameOver) {
+    ctx.fillStyle = "white";
+    ctx.font = "60px arial bold";
+    ctx.textAlign = "center";
+    ctx.fillText("Game over", canvas.width / 2, canvas.height / 2);
+  }
 }
 function gameLoop() {
+  if (gameOver) return;
   update();
   draw();
   requestAnimationFrame(gameLoop);
