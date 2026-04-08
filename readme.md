@@ -86,6 +86,12 @@ This project includes several stylistic and gameplay enhancements:
 
 ---
 
+## Game Screenshots
+<img width="1203" height="693" alt="image" src="https://github.com/user-attachments/assets/b5155187-0a9a-4ae7-8032-70bc37e7b564" />
+<img width="1205" height="693" alt="image" src="https://github.com/user-attachments/assets/ced814c9-4d1f-4e20-82a5-d91ef3f49943" />
+
+---
+
 ## 👤 Author
 
 **Soren Javedan**
