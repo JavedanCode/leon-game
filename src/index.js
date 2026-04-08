@@ -11,6 +11,8 @@ import ashley2 from "./sprites/a2.png";
 import ashley3 from "./sprites/a3.png";
 import ashley4 from "./sprites/a4.png";
 import ashley from "./sprites/ashley.png";
+import ground from "./sprites/ground.png";
+import background from "./sprites/background.png";
 
 const canvas = createCanvas();
 
@@ -43,6 +45,8 @@ const spriteWidth = 80;
 
 const ashleyGameOver = loadImage(ashley);
 
+const backgroundImage = loadImage(background);
+
 function loadImage(src) {
   const img = new Image();
   img.src = src;
@@ -70,7 +74,7 @@ const player = {
   hitbox: {
     width: 40,
     height: 60,
-    offsetX: 20,
+    offsetX: 10,
     offsetY: 70,
   },
 
@@ -102,6 +106,7 @@ let ground1 = {
   y: canvas.height - groundHeight,
   width: canvas.width,
   height: groundHeight,
+  sprite: loadImage(ground),
 };
 
 let ground2 = {
@@ -109,6 +114,7 @@ let ground2 = {
   y: canvas.height - groundHeight,
   width: canvas.width,
   height: groundHeight,
+  sprite: loadImage(ground),
 };
 
 function Obstacle() {
@@ -200,19 +206,28 @@ function update() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+
   ctx.fillStyle = "white";
   ctx.font = "30px arial";
   ctx.textAlign = "left";
   ctx.fillText(`Score: ${score}`, 40, 40);
 
-  ctx.fillStyle = "red";
-  ctx.fillRect(ground1.x, ground1.y, ground1.width, ground1.height);
-  ctx.fillStyle = "green";
+  ctx.drawImage(
+    ground1.sprite,
+    ground1.x,
+    ground1.y,
+    ground1.width,
+    ground1.height,
+  );
 
-  ctx.fillRect(ground2.x, ground2.y, ground2.width, ground2.height);
-  ctx.fillStyle = "blue";
-
-  ctx.fillStyle = "yellow";
+  ctx.drawImage(
+    ground2.sprite,
+    ground2.x,
+    ground2.y,
+    ground2.width,
+    ground2.height,
+  );
 
   animationCounter++;
 
@@ -223,8 +238,7 @@ function draw() {
     player.width,
     player.height + spriteOffsetY,
   );
-  ctx.strokeStyle = "red";
-  ctx.strokeRect(player.x, player.y, player.width, player.height);
+
   if (animationCounter < 20) {
     player.sprite = walkSprites[0];
   } else if (animationCounter < 40) {
