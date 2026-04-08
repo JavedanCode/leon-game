@@ -86,7 +86,7 @@ const player = {
   y: groundLevel - 50,
 
   hitbox: {
-    width: 40,
+    width: 20,
     height: 60,
     offsetX: 10,
     offsetY: 70,
@@ -134,9 +134,9 @@ canvas.addEventListener("click", (e) => {
 });
 
 const gapChances = [
-  { gap: 500, weight: 0.5 },
-  { gap: 600, weight: 0.3 },
-  { gap: 700, weight: 0.2 },
+  { gap: 600, weight: 0.5 },
+  { gap: 700, weight: 0.3 },
+  { gap: 800, weight: 0.2 },
 ];
 
 let ground1 = {
