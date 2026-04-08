@@ -38,7 +38,7 @@ let score = 0;
 
 let animationCounter = 0;
 
-const spriteOffsetY = -10; // adjust this
+const spriteOffsetY = -10;
 
 const spriteHeight = 120;
 const spriteWidth = 80;
@@ -51,6 +51,20 @@ function loadImage(src) {
   const img = new Image();
   img.src = src;
   return img;
+}
+
+function resetGame() {
+  obstacles = [];
+  score = 0;
+  gameOver = false;
+  distanceSinceLastSpawn = 0;
+  nextSpawnDistance = getRandomGap();
+
+  player.y = groundLevel - player.height;
+  player.vy = 0;
+  canJump = true;
+
+  animationCounter = 0;
 }
 
 const walkSprites = [
@@ -95,10 +109,34 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+canvas.addEventListener("click", (e) => {
+  if (!gameOver) return;
+
+  const rect = canvas.getBoundingClientRect();
+
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  const buttonX = canvas.width / 2 - 100;
+  const buttonY = canvas.height / 2 + 50;
+  const buttonWidth = 200;
+  const buttonHeight = 60;
+
+  if (
+    mouseX >= buttonX &&
+    mouseX <= buttonX + buttonWidth &&
+    mouseY >= buttonY &&
+    mouseY <= buttonY + buttonHeight
+  ) {
+    resetGame();
+    requestAnimationFrame(gameLoop); // restart loop
+  }
+});
+
 const gapChances = [
-  { gap: 500, weight: 0.5 }, // 50%
-  { gap: 450, weight: 0.3 }, // 30%
-  { gap: 600, weight: 0.2 }, // 20%
+  { gap: 500, weight: 0.5 },
+  { gap: 600, weight: 0.3 },
+  { gap: 700, weight: 0.2 },
 ];
 
 let ground1 = {
@@ -272,6 +310,24 @@ function draw() {
   }
 
   if (gameOver) {
+    const button = {
+      x: canvas.width / 2 - 100,
+      y: canvas.height / 2 + 50,
+      width: 200,
+      height: 60,
+    };
+
+    // draw button
+    ctx.fillStyle = "#222";
+    ctx.fillRect(button.x, button.y, button.width, button.height);
+
+    ctx.strokeStyle = "white";
+    ctx.strokeRect(button.x, button.y, button.width, button.height);
+
+    ctx.fillStyle = "white";
+    ctx.font = "30px arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Restart", canvas.width / 2, button.y + 40);
     ctx.fillStyle = "white";
     ctx.font = "60px arial bold";
     ctx.textAlign = "center";
