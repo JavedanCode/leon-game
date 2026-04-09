@@ -96,7 +96,7 @@ const player = {
     width: 5,
     height: 50,
     offsetX: 30,
-    offsetY: 70,
+    offsetY: 50,
   },
 
   width: spriteWidth,
@@ -194,7 +194,7 @@ function FlyingObstacle() {
   return {
     type: "crow",
     x: canvas.width,
-    y: canvas.height / 2 - 155,
+    y: canvas.height / 2 - 157,
     width: spriteWidth,
     height: spriteHeight,
     sprite: crowSprite,
