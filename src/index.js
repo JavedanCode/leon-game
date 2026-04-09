@@ -24,7 +24,7 @@ const groundHeight = 50;
 
 const groundLevel = canvas.height - groundHeight;
 
-let gameSpeed = 3;
+let gameSpeed = 2;
 
 let obstacles = [];
 
@@ -59,6 +59,7 @@ function resetGame() {
   gameOver = false;
   distanceSinceLastSpawn = 0;
   nextSpawnDistance = getRandomGap();
+  gameSpeed = 2;
 
   player.y = groundLevel - player.height;
   player.vy = 0;
@@ -86,16 +87,16 @@ const player = {
   y: groundLevel - 50,
 
   hitbox: {
-    width: 20,
+    width: 10,
     height: 60,
-    offsetX: 10,
+    offsetX: 30,
     offsetY: 70,
   },
 
   width: spriteWidth,
   height: spriteHeight,
 
-  jumpSpeed: -35,
+  jumpSpeed: -30,
   gravity: 1,
   vy: 0,
   sprite: walkSprites[0],
@@ -240,6 +241,7 @@ function update() {
       return;
     }
   }
+  gameSpeed += 0.0015;
 }
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
