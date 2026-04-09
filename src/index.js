@@ -10,6 +10,7 @@ import ashley1 from "./sprites/a1.png";
 import ashley2 from "./sprites/a2.png";
 import ashley3 from "./sprites/a3.png";
 import ashley4 from "./sprites/a4.png";
+import crow from "./sprites/c1.png";
 import ashley from "./sprites/ashley.png";
 import ground from "./sprites/ground.png";
 import background from "./sprites/background.png";
@@ -29,6 +30,8 @@ let gameSpeed = 2;
 let obstacles = [];
 
 let distanceSinceLastSpawn = 0;
+
+let distanceSinceLastCrowSpawn = 0;
 
 let canJump = true;
 
@@ -82,13 +85,16 @@ const ashleySprites = [
   loadImage(ashley3),
   loadImage(ashley4),
 ];
+
+const crowSprite = loadImage(crow);
+
 const player = {
   x: 400,
   y: groundLevel - 50,
 
   hitbox: {
-    width: 10,
-    height: 60,
+    width: 5,
+    height: 50,
     offsetX: 30,
     offsetY: 70,
   },
@@ -96,8 +102,8 @@ const player = {
   width: spriteWidth,
   height: spriteHeight,
 
-  jumpSpeed: -30,
-  gravity: 1,
+  jumpSpeed: -21,
+  gravity: 0.8,
   vy: 0,
   sprite: walkSprites[0],
 };
@@ -140,7 +146,23 @@ const gapChances = [
   { gap: 800, weight: 0.2 },
 ];
 
+const crowGapChances = [
+  {
+    gap: 900,
+    weight: 0.5,
+  },
+  {
+    gap: 1200,
+    weight: 0.3,
+  },
+  {
+    gap: 1500,
+    weight: 0.2,
+  },
+];
+
 let ground1 = {
+  type: "ground",
   x: 0,
   y: canvas.height - groundHeight,
   width: canvas.width,
@@ -149,6 +171,7 @@ let ground1 = {
 };
 
 let ground2 = {
+  type: "ground",
   x: canvas.width,
   y: canvas.height - groundHeight,
   width: canvas.width,
@@ -158,11 +181,23 @@ let ground2 = {
 
 function Obstacle() {
   return {
+    type: "ashley",
     x: canvas.width,
     y: canvas.height - groundHeight - spriteHeight,
     width: spriteWidth,
     height: spriteHeight,
     sprite: ashleySprites[0],
+  };
+}
+
+function FlyingObstacle() {
+  return {
+    type: "crow",
+    x: canvas.width,
+    y: canvas.height / 2 - 165,
+    width: spriteWidth,
+    height: spriteHeight,
+    sprite: crowSprite,
   };
 }
 
@@ -174,6 +209,18 @@ function getRandomGap() {
     sum += gapChances[i].weight;
     if (rand < sum) {
       return gapChances[i].gap;
+    }
+  }
+}
+
+function getCrowRandomGap() {
+  let rand = Math.random();
+  let sum = 0;
+
+  for (let i = 0; i < crowGapChances.length; i++) {
+    sum += crowGapChances[i].weight;
+    if (rand < sum) {
+      return crowGapChances[i].gap;
     }
   }
 }
@@ -197,6 +244,7 @@ function isColliding(a, b) {
 }
 
 let nextSpawnDistance = getRandomGap();
+let nextCrowSpawnDistance = getCrowRandomGap();
 
 function update() {
   ground1.x -= gameSpeed;
@@ -219,8 +267,22 @@ function update() {
     nextSpawnDistance = getRandomGap();
   }
 
+  if (score > 3000) {
+    distanceSinceLastCrowSpawn += gameSpeed;
+    if (distanceSinceLastCrowSpawn >= nextCrowSpawnDistance) {
+      obstacles.push(FlyingObstacle());
+
+      distanceSinceLastCrowSpawn = 0;
+      nextCrowSpawnDistance = getCrowRandomGap();
+    }
+  }
+
   for (let i = 0; i < obstacles.length; i++) {
-    obstacles[i].x -= gameSpeed;
+    if (obstacles[i].type === "ashley") {
+      obstacles[i].x -= gameSpeed;
+    } else {
+      obstacles[i].x -= gameSpeed + 3;
+    }
   }
 
   obstacles = obstacles.filter((obs) => obs.x + obs.width > 0);
@@ -298,13 +360,13 @@ function draw() {
   for (let i = 0; i < obstacles.length; i++) {
     let obs = obstacles[i];
     ctx.drawImage(obs.sprite, obs.x, obs.y, obs.width, obs.height);
-    if (animationCounter < 20) {
+    if (animationCounter < 20 && obs.type === "ashley") {
       obs.sprite = ashleySprites[0];
-    } else if (animationCounter < 40) {
+    } else if (animationCounter < 40 && obs.type === "ashley") {
       obs.sprite = ashleySprites[1];
-    } else if (animationCounter < 60) {
+    } else if (animationCounter < 60 && obs.type === "ashley") {
       obs.sprite = ashleySprites[2];
-    } else if (animationCounter < 80) {
+    } else if (animationCounter < 80 && obs.type === "ashley") {
       obs.sprite = ashleySprites[3];
     } else {
       animationCounter = 0;
