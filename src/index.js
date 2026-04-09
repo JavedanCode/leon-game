@@ -25,7 +25,7 @@ const groundHeight = 50;
 
 const groundLevel = canvas.height - groundHeight;
 
-let gameSpeed = 2;
+let gameSpeed = 2.3;
 
 let obstacles = [];
 
@@ -62,7 +62,7 @@ function resetGame() {
   gameOver = false;
   distanceSinceLastSpawn = 0;
   nextSpawnDistance = getRandomGap();
-  gameSpeed = 2;
+  gameSpeed = 2.3;
 
   player.y = groundLevel - player.height;
   player.vy = 0;
@@ -102,7 +102,7 @@ const player = {
   width: spriteWidth,
   height: spriteHeight,
 
-  jumpSpeed: -21,
+  jumpSpeed: -21.6,
   gravity: 0.8,
   vy: 0,
   sprite: walkSprites[0],
@@ -194,7 +194,7 @@ function FlyingObstacle() {
   return {
     type: "crow",
     x: canvas.width,
-    y: canvas.height / 2 - 165,
+    y: canvas.height / 2 - 155,
     width: spriteWidth,
     height: spriteHeight,
     sprite: crowSprite,
@@ -281,7 +281,7 @@ function update() {
     if (obstacles[i].type === "ashley") {
       obstacles[i].x -= gameSpeed;
     } else {
-      obstacles[i].x -= gameSpeed + 3;
+      obstacles[i].x -= gameSpeed + 4;
     }
   }
 
@@ -303,7 +303,7 @@ function update() {
       return;
     }
   }
-  gameSpeed += 0.0015;
+  gameSpeed += 0.001;
 }
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -360,16 +360,16 @@ function draw() {
   for (let i = 0; i < obstacles.length; i++) {
     let obs = obstacles[i];
     ctx.drawImage(obs.sprite, obs.x, obs.y, obs.width, obs.height);
-    if (animationCounter < 20 && obs.type === "ashley") {
+    if (animationCounter < 30 && obs.type === "ashley") {
       obs.sprite = ashleySprites[0];
-    } else if (animationCounter < 40 && obs.type === "ashley") {
-      obs.sprite = ashleySprites[1];
     } else if (animationCounter < 60 && obs.type === "ashley") {
+      obs.sprite = ashleySprites[1];
+    } else if (animationCounter < 90 && obs.type === "ashley") {
       obs.sprite = ashleySprites[2];
-    } else if (animationCounter < 80 && obs.type === "ashley") {
+    } else if (animationCounter < 110 && obs.type === "ashley") {
       obs.sprite = ashleySprites[3];
-    } else {
-      animationCounter = 0;
+    } else if (animationCounter < 140 && obs.type === "ashley") {
+      animationCounter = 30;
     }
   }
 
